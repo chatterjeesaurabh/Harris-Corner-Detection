@@ -1,6 +1,6 @@
 # Harris Corner Detection
 
-This is the implementation of **Harris Corner Detection** from scratch using NumPy with interactive GUI in Python. Following are the steps:
+This is the implementation of **Harris Corner Detection** from scratch using NumPy in Python. Following are the steps:
 1. Image **gradient** along x and y direction: act as two features for each pixel
 2. For each pixel, compute **Edge Correlation matrix (M)** elements:
     - Variance of gradient along x in neighbourhood
