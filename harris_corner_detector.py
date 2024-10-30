@@ -29,15 +29,14 @@ def sobel_filters(img):
 
 
 img = cv2.imread('images/blocks.jpg', 0)
-# img11 = cv2.imread('images/PCB.jpg')
 img = np.asarray(img, np.float32)
 
 Gx, Gy = sobel_filters(img)
 
 # 'M' matrix values:
-m11 = np.multiply(Gx, Gx)       # Variance wrt edge pixels along X-dir ideally : but all pixels considered in a given window-size with dirrent weights -> Gaussian
-m22 = np.multiply(Gy, Gy)       # Variance wrt edge pixels along Y-dir ideally : but all pixels considered in a given window-size with dirrent weights -> Gaussian
-m12 = m21 = np.multiply(Gx, Gy)
+m11 = np.multiply(Gx, Gx)       # Variance wrt edge pixels along X-dir in neighbourhood: all pixels considered in a given window-size with different weights -> Gaussian
+m22 = np.multiply(Gy, Gy)       # Variance wrt edge pixels along Y-dir in neighbourhood: all pixels considered in a given window-size with different weights -> Gaussian
+m12 = m21 = np.multiply(Gx, Gy) # Co-variance wrt edge pixels along X-dir and y-dir in neighbourhood: all pixels considered in a given window-size with different weights -> Gaussian
 
 g = gaussian_kernel(5, 1)
 
@@ -49,25 +48,17 @@ m12 = ndimage.convolve(m12, g)
 m21 = ndimage.convolve(m21, g)
 
 
-# # x-dir mask:
-# x_mask = np.array([[0, 0, 0], [1, 2, 1], [0, 0, 0]], np.float64)
-
-# # y-dir mask:
-# y_mask = np.array([[0, 1, 0], [0, 2, 0], [0, 1, 0]], np.float64)
-
-# # x-y dir mask:
-# xy_mask = np.array([[0, 1, 0], [1, 2, 1], [0, 1, 0]], np.float64)
-
-# m11 = ndimage.convolve(m11, x_mask)
-# m22 = ndimage.convolve(m22, y_mask)
-# m12 = ndimage.convolve(m12, xy_mask)
-# m21 = ndimage.convolve(m21, xy_mask)
-
-
+# Now need to determine axes of maximum variances, two axes:
 
 # Method 1: Determine Eigen Values E1 and E2 => then classify into Corner, Edge or Flat
+# E1>>E2 or E1<<E2: Edge pixel
+# E1~E2 and large: Corner pixel
+# E1~E2 and small: None
+
 
 # Method 2: Calculate "Cornerness-Score" using just Determinant & Trace of 'M' matrix:
+# R = E1.E2 - k (E1+E2)^2 = Det(M) - k.Trace(M)^2
+# R large: Corner
 
 trace = m11 + m22
 
